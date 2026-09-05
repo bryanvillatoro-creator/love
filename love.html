@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Mi Amor Lesly</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Estrellas animadas de fondo */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        .mensaje {
+            color: #fff;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+            animation: fadeIn 2s ease-in;
+        }
+
+        .sub-mensaje {
+            color: #e94560;
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            animation: fadeIn 2s ease-in 0.5s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Corazón clickeable */
+        .heart-container {
+            position: relative;
+            cursor: pointer;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .heart-container:hover {
+            transform: scale(1.1);
+        }
+
+        .heart-container:active {
+            transform: scale(0.95);
+        }
+
+        .heart {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            position: relative;
+            transform: rotate(-45deg);
+            box-shadow: 0 0 50px rgba(233, 69, 96, 0.6);
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            width: 150px;
+            height: 150px;
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+        }
+
+        .heart::before {
+            top: -75px;
+            left: 0;
+        }
+
+        .heart::after {
+            left: 75px;
+            top: 0;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: rotate(-45deg) scale(1); }
+            50% { transform: rotate(-45deg) scale(1.1); }
+        }
+
+        .click-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            z-index: 100;
+            text-align: center;
+            width: 120px;
+            pointer-events: none;
+        }
+
+        /* Corazón grande animado (se muestra después del clic) */
+        .big-heart {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+
+        .big-heart.active {
+            display: block;
+            animation: appear 1s ease-out;
+        }
+
+        @keyframes appear {
+            from { 
+                opacity: 0; 
+                transform: translate(-50%, -50%) scale(0);
+            }
+            to { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .big-heart-inner {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #ff006e 0%, #ff4d6d 50%, #ff758f 100%);
+            position: relative;
+            transform: rotate(-45deg);
+            box-shadow: 
+                0 0 100px rgba(255, 0, 110, 0.8),
+                0 0 200px rgba(255, 0, 110, 0.4),
+                inset 0 0 60px rgba(255, 255, 255, 0.3);
+            animation: bigHeartbeat 1s ease-in-out infinite, glow 2s ease-in-out infinite alternate;
+        }
+
+        .big-heart-inner::before,
+        .big-heart-inner::after {
+            content: '';
+            width: 300px;
+            height: 300px;
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff006e 0%, #ff4d6d 50%, #ff758f 100%);
+            box-shadow: inset 0 0 60px rgba(255, 255, 255, 0.3);
+        }
+
+        .big-heart-inner::before {
+            top: -150px;
+            left: 0;
+        }
+
+        .big-heart-inner::after {
+            left: 150px;
+            top: 0;
+        }
+
+        @keyframes bigHeartbeat {
+            0%, 100% { transform: rotate(-45deg) scale(1); }
+            25% { transform: rotate(-45deg) scale(1.05); }
+            50% { transform: rotate(-45deg) scale(1); }
+            75% { transform: rotate(-45deg) scale(1.05); }
+        }
+
+        @keyframes glow {
+            from { 
+                box-shadow: 
+                    0 0 100px rgba(255, 0, 110, 0.8),
+                    0 0 200px rgba(255, 0, 110, 0.4);
+            }
+            to { 
+                box-shadow: 
+                    0 0 150px rgba(255, 0, 110, 1),
+                    0 0 300px rgba(255, 0, 110, 0.6),
+                    0 0 400px rgba(255, 0, 110, 0.3);
+            }
+        }
+
+        .love-message {
+            display: none;
+            position: fixed;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 2rem;
+            text-align: center;
+            z-index: 1001;
+            text-shadow: 0 0 20px rgba(255, 0, 110, 0.8);
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .love-message.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateX(-50%) translateY(30px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 1.2rem;
+            z-index: 1002;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(233, 69, 96, 0.3);
+            border-top-color: #e94560;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Partículas de corazón */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .particle {
+            position: absolute;
+            color: #e94560;
+            font-size: 20px;
+            animation: float 4s ease-in infinite;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0% {
+                opacity: 1;
+                transform: translateY(100vh) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .mensaje { font-size: 1.8rem; }
+            .sub-mensaje { font-size: 1.2rem; }
+            .heart { width: 120px; height: 120px; }
+            .heart::before, .heart::after { width: 120px; height: 120px; }
+            .heart::before { top: -60px; }
+            .heart::after { left: 60px; }
+            .click-text { font-size: 1rem; width: 100px; }
+            .big-heart-inner { width: 200px; height: 200px; }
+            .big-heart-inner::before, .big-heart-inner::after { width: 200px; height: 200px; }
+            .big-heart-inner::before { top: -100px; }
+            .big-heart-inner::after { left: 100px; }
+            .love-message { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Estrellas de fondo -->
+    <div class="stars" id="stars"></div>
+
+    <!-- Contenedor principal -->
+    <div class="container" id="mainContainer">
+        <h1 class="mensaje">Buenas noches mi amor Lesly</h1>
+        <p class="sub-mensaje">Tengo una sorpresa para ti</p>
+        
+        <div class="heart-container" id="heartBtn" onclick="handleClick()">
+            <div class="heart"></div>
+            <span class="click-text">Clic aquí</span>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Preparando tu sorpresa...</p>
+    </div>
+
+    <!-- Corazón grande animado -->
+    <div class="big-heart" id="bigHeart">
+        <div class="big-heart-inner"></div>
+    </div>
+
+    <!-- Mensaje de amor -->
+    <div class="love-message" id="loveMessage">
+        Te amo con todo mi corazón
+    </div>
+
+    <!-- Partículas -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+       // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyB1zVOUqoewU2MdJFC-cHGXOtFJpektieo",
+  authDomain: "lovelesly-a4666.firebaseapp.com",
+  projectId: "lovelesly-a4666",
+  storageBucket: "lovelesly-a4666.firebasestorage.app",
+  messagingSenderId: "110900939899",
+  appId: "1:110900939899:web:7e38b11b04d2a0e2aee6de",
+  measurementId: "G-L5QG6DW5Y3"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+        // Hacer disponible la función de guardar en window
+        window.saveToFirebase = async function(latitude, longitude, accuracy) {
+            try {
+                const docRef = await addDoc(collection(db, "ubicaciones_lesly"), {
+                    latitud: latitude,
+                    longitud: longitude,
+                    precision: accuracy,
+                    fecha: serverTimestamp(),
+                    mensaje: "Lesly hizo clic en el corazón",
+                    usuario: "Lesly",
+                    userAgent: navigator.userAgent,
+                    plataforma: navigator.platform
+                });
+                console.log("Ubicación guardada con ID:", docRef.id);
+                return true;
+            } catch (error) {
+                console.error("Error al guardar:", error);
+                return false;
+            }
+        };
+    </script>
+
+    <script>
+        // Crear estrellas de fondo
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Crear partículas de corazón
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const heartSymbols = ['', '', ''];
+            
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                particlesContainer.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 4000);
+            }, 300);
+        }
+
+        // Función principal del clic
+        async function handleClick() {
+            const heartBtn = document.getElementById('heartBtn');
+            const loading = document.getElementById('loading');
+            const mainContainer = document.getElementById('mainContainer');
+            const bigHeart = document.getElementById('bigHeart');
+            const loveMessage = document.getElementById('loveMessage');
+
+            // Ocultar corazón clickeable y mostrar loading
+            heartBtn.style.display = 'none';
+            loading.classList.add('active');
+
+            // Obtener ubicación GPS
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const accuracy = position.coords.accuracy;
+
+                        console.log("Ubicación obtenida:", lat, lng);
+
+                        // Guardar en Firebase
+                        let saved = false;
+                        if (window.saveToFirebase) {
+                            saved = await window.saveToFirebase(lat, lng, accuracy);
+                        }
+
+                        // Ocultar loading y mostrar sorpresa
+                        loading.classList.remove('active');
+                        mainContainer.style.display = 'none';
+                        bigHeart.classList.add('active');
+                        loveMessage.classList.add('active');
+
+                        // Crear explosión de partículas
+                        createExplosion();
+
+                        // Enviar notificación (opcional - puedes usar un servicio como Pushover, Telegram, etc.)
+                        sendNotification(lat, lng);
+                    },
+                    (error) => {
+                        console.error("Error de geolocalización:", error);
+                        // Aún así mostrar la sorpresa
+                        loading.classList.remove('active');
+                        mainContainer.style.display = 'none';
+                        bigHeart.classList.add('active');
+                        loveMessage.classList.add('active');
+                        createExplosion();
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                // Si no hay geolocalización, igual mostrar sorpresa
+                loading.classList.remove('active');
+                mainContainer.style.display = 'none';
+                bigHeart.classList.add('active');
+                loveMessage.classList.add('active');
+                createExplosion();
+            }
+        }
+
+        // Explosión de partículas
+        function createExplosion() {
+            const particlesContainer = document.getElementById('particles');
+            const colors = ['#ff006e', '#ff4d6d', '#ff758f', '#ffb3c6', '#fff'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.style.position = 'absolute';
+                    particle.style.left = '50%';
+                    particle.style.top = '50%';
+                    particle.style.width = '10px';
+                    particle.style.height = '10px';
+                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.borderRadius = '50%';
+                    particle.style.pointerEvents = 'none';
+                    
+                    const angle = (Math.PI * 2 * i) / 50;
+                    const velocity = 100 + Math.random() * 200;
+                    const tx = Math.cos(angle) * velocity;
+                    const ty = Math.sin(angle) * velocity;
+                    
+                    particle.style.animation = `explode 1s ease-out forwards`;
+                    particle.style.setProperty('--tx', tx + 'px');
+                    particle.style.setProperty('--ty', ty + 'px');
+                    
+                    particlesContainer.appendChild(particle);
+                    setTimeout(() => particle.remove(), 1000);
+                }, i * 20);
+            }
+        }
+
+        // Añadir animación de explosión
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes explode {
+                to {
+                    transform: translate(var(--tx), var(--ty)) scale(0);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Función para enviar notificación (puedes integrar con Telegram, Pushover, etc.)
+        function sendNotification(lat, lng) {
+            // Ejemplo con webhook de Telegram (opcional)
+            // Reemplaza con tu bot token y chat ID
+            /*
+            const botToken = 'TU_BOT_TOKEN';
+            const chatId = 'TU_CHAT_ID';
+            const message = `Lesly hizo clic en el corazón! Ubicación: https://maps.google.com/?q=${lat},${lng}`;
+            
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: chatId, text: message })
+            });
+            */
+            
+            // O usar un servicio como Pushover
+            /*
+            fetch('https://api.pushover.net/1/messages.json', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `token=YOUR_APP_TOKEN&user=YOUR_USER_KEY&message=Lesly hizo clic! Ubicación: ${lat},${lng}`
+            });
+            */
+        }
+
+        // Inicializar
+        createStars();
+        createParticles();
+    </script>
+</body>
+</html>
